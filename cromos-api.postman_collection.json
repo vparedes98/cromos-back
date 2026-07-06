@@ -1,0 +1,118 @@
+{
+	"info": {
+		"_postman_id": "b8f3a1d2-4c6e-4f9a-9d21-7e5a30c4b812",
+		"name": "Cromos API - Fase 2",
+		"description": "Coleccion para probar el CRUD de la API de cromos del mundial. El servidor debe estar corriendo en http://localhost:3000 (npm start dentro de la carpeta api).",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Listar todos los cromos",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/api/cromos",
+					"host": ["{{base_url}}"],
+					"path": ["api", "cromos"]
+				},
+				"description": "Devuelve todos los cromos de la base de datos."
+			},
+			"response": []
+		},
+		{
+			"name": "Obtener un cromo por id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/api/cromos/1",
+					"host": ["{{base_url}}"],
+					"path": ["api", "cromos", "1"]
+				},
+				"description": "Devuelve un solo cromo. Si el id no existe responde 404."
+			},
+			"response": []
+		},
+		{
+			"name": "Crear un cromo",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"numeroCromo\": \"AR-07\",\n  \"edicion\": \"Nueva Promesa\",\n  \"valorMercado\": 70,\n  \"foto\": null,\n  \"rareza\": \"especial\",\n  \"obtenido\": false,\n  \"color\": \"#7fb3d5\",\n  \"jugadorId\": 4,\n  \"albumId\": 1\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/api/cromos",
+					"host": ["{{base_url}}"],
+					"path": ["api", "cromos"]
+				},
+				"description": "Crea un cromo nuevo. Responde 201 con el cromo creado. Si faltan campos obligatorios responde 400. El valorMercado va en millones de USD y jugadorId/albumId deben existir en sus tablas."
+			},
+			"response": []
+		},
+		{
+			"name": "Actualizar un cromo",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"obtenido\": true,\n  \"valorMercado\": 75\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/api/cromos/1",
+					"host": ["{{base_url}}"],
+					"path": ["api", "cromos", "1"]
+				},
+				"description": "Actualiza un cromo. Los campos que no se envian conservan su valor anterior."
+			},
+			"response": []
+		},
+		{
+			"name": "Eliminar un cromo",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/api/cromos/2",
+					"host": ["{{base_url}}"],
+					"path": ["api", "cromos", "2"]
+				},
+				"description": "Elimina un cromo por id. Si el id no existe responde 404."
+			},
+			"response": []
+		},
+		{
+			"name": "Buscar un id que no existe (404)",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/api/cromos/999",
+					"host": ["{{base_url}}"],
+					"path": ["api", "cromos", "999"]
+				},
+				"description": "Ejemplo de respuesta de error cuando el cromo no existe."
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:3000"
+		}
+	]
+}
