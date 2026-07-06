@@ -1,0 +1,7 @@
+node_modules/
+
+# base de datos local (se genera sola desde database.sql)
+cromos.db
+
+# variables de entorno (en el repo solo va .env.example)
+.env

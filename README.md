@@ -1,11 +1,10 @@
 # API de Cromos del Mundial (Fase 2)
 
-Esta carpeta contiene el backend de la Fase 2 del proyecto. Es una API REST hecha con Node.js y Express que expone el CRUD completo de los cromos que en la Fase 1 vivían como data dummy en `src/data`. Ahora los datos se guardan en una base de datos SQL con el modelo completo de 5 entidades.
+Este repositorio contiene el backend del proyecto de cromos del mundial. Es una API REST hecha con Node.js y Express que expone el CRUD completo de los cromos que en la Fase 1 vivían como data dummy en el frontend ([cromos-front](https://github.com/vparedes98/cromos-front)). Ahora los datos se guardan en una base de datos SQL con el modelo completo de 5 entidades.
 
 ## Cómo levantar la API
 
 ```bash
-cd api
 npm install
 npm start
 ```
