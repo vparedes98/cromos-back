@@ -1,112 +1,706 @@
 {
 	"info": {
 		"_postman_id": "b8f3a1d2-4c6e-4f9a-9d21-7e5a30c4b812",
-		"name": "Cromos API - Fase 2",
-		"description": "Coleccion para probar el CRUD de la API de cromos del mundial. El servidor debe estar corriendo en http://localhost:3000 (npm start dentro de la carpeta api).",
+		"name": "Cromos API",
+		"description": "Coleccion para probar el CRUD de la API de cromos del mundial. El servidor debe estar corriendo (npm start). Hay una carpeta por recurso con las 5 operaciones, mas ejemplos de filtros y errores.",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
 		{
-			"name": "Listar todos los cromos",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{base_url}}/api/cromos",
-					"host": ["{{base_url}}"],
-					"path": ["api", "cromos"]
+			"name": "Cromos",
+			"item": [
+				{
+					"name": "Listar cromos",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/cromos",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"cromos"
+							]
+						}
+					},
+					"response": []
 				},
-				"description": "Devuelve todos los cromos de la base de datos."
-			},
-			"response": []
+				{
+					"name": "Obtener un cromo por id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/cromos/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"cromos",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Crear un cromo",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/cromos",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"cromos"
+							]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"numeroCromo\": \"AR-07\",\n  \"edicion\": \"Nueva Promesa\",\n  \"valorMercado\": 70,\n  \"foto\": null,\n  \"rareza\": \"especial\",\n  \"obtenido\": false,\n  \"color\": \"#7fb3d5\",\n  \"jugadorId\": 4,\n  \"albumId\": 1\n}"
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Actualizar un cromo",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/cromos/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"cromos",
+								"1"
+							]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"obtenido\": true,\n  \"valorMercado\": 75\n}"
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Eliminar un cromo",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/cromos/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"cromos",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Filtrar por edicion",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/cromos?edicion=cloud",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"cromos"
+							],
+							"query": [
+								{
+									"key": "edicion",
+									"value": "cloud"
+								}
+							]
+						},
+						"description": "Busca por texto dentro del campo edicion."
+					},
+					"response": []
+				},
+				{
+					"name": "Filtrar por pais",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/cromos?paisId=2",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"cromos"
+							],
+							"query": [
+								{
+									"key": "paisId",
+									"value": "2"
+								}
+							]
+						},
+						"description": "Cromos de los jugadores de un pais. Tambien se puede filtrar con jugadorId y equipoId, y combinar filtros."
+					},
+					"response": []
+				},
+				{
+					"name": "Id que no existe (404)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/cromos/999",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"cromos",
+								"999"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Crear con jugadorId invalido (400)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/cromos",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"cromos"
+							]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"numeroCromo\": \"XX-01\",\n  \"edicion\": \"Prueba\",\n  \"rareza\": \"comun\",\n  \"jugadorId\": 999,\n  \"albumId\": 1\n}"
+						}
+					},
+					"response": []
+				}
+			]
 		},
 		{
-			"name": "Obtener un cromo por id",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{base_url}}/api/cromos/1",
-					"host": ["{{base_url}}"],
-					"path": ["api", "cromos", "1"]
+			"name": "Paises",
+			"item": [
+				{
+					"name": "Listar paises",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/paises",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"paises"
+							]
+						}
+					},
+					"response": []
 				},
-				"description": "Devuelve un solo cromo. Si el id no existe responde 404."
-			},
-			"response": []
+				{
+					"name": "Obtener un pais por id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/paises/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"paises",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Crear un pais",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/paises",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"paises"
+							]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"nombre\": \"Uruguay\",\n  \"continente\": \"América\",\n  \"codigoFifa\": \"URU\",\n  \"rankingFifa\": 15\n}"
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Actualizar un pais",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/paises/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"paises",
+								"1"
+							]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"rankingFifa\": 12\n}"
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Eliminar un pais",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/paises/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"paises",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Eliminar pais con equipos (400)",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/paises/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"paises",
+								"1"
+							]
+						},
+						"description": "Da 400 porque el pais tiene equipos asociados."
+					},
+					"response": []
+				}
+			]
 		},
 		{
-			"name": "Crear un cromo",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n  \"numeroCromo\": \"AR-07\",\n  \"edicion\": \"Nueva Promesa\",\n  \"valorMercado\": 70,\n  \"foto\": null,\n  \"rareza\": \"especial\",\n  \"obtenido\": false,\n  \"color\": \"#7fb3d5\",\n  \"jugadorId\": 4,\n  \"albumId\": 1\n}"
+			"name": "Equipos",
+			"item": [
+				{
+					"name": "Listar equipos",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/equipos",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"equipos"
+							]
+						}
+					},
+					"response": []
 				},
-				"url": {
-					"raw": "{{base_url}}/api/cromos",
-					"host": ["{{base_url}}"],
-					"path": ["api", "cromos"]
+				{
+					"name": "Obtener un equipo por id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/equipos/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"equipos",
+								"1"
+							]
+						}
+					},
+					"response": []
 				},
-				"description": "Crea un cromo nuevo. Responde 201 con el cromo creado. Si faltan campos obligatorios responde 400. El valorMercado va en millones de USD y jugadorId/albumId deben existir en sus tablas."
-			},
-			"response": []
+				{
+					"name": "Crear un equipo",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/equipos",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"equipos"
+							]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"nombre\": \"La Celeste\",\n  \"directorTecnico\": \"Marcelo Bielsa\",\n  \"anioFundacion\": 1900,\n  \"logo\": \"URU\",\n  \"grupoMundialista\": \"A\",\n  \"paisId\": 1\n}"
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Actualizar un equipo",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/equipos/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"equipos",
+								"1"
+							]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"directorTecnico\": \"Nuevo DT\"\n}"
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Eliminar un equipo",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/equipos/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"equipos",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
 		},
 		{
-			"name": "Actualizar un cromo",
-			"request": {
-				"method": "PUT",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n  \"obtenido\": true,\n  \"valorMercado\": 75\n}"
+			"name": "Jugadores",
+			"item": [
+				{
+					"name": "Listar jugadores",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/jugadores",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"jugadores"
+							]
+						}
+					},
+					"response": []
 				},
-				"url": {
-					"raw": "{{base_url}}/api/cromos/1",
-					"host": ["{{base_url}}"],
-					"path": ["api", "cromos", "1"]
+				{
+					"name": "Obtener un jugador por id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/jugadores/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"jugadores",
+								"1"
+							]
+						}
+					},
+					"response": []
 				},
-				"description": "Actualiza un cromo. Los campos que no se envian conservan su valor anterior."
-			},
-			"response": []
+				{
+					"name": "Crear un jugador",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/jugadores",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"jugadores"
+							]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"nombre\": \"Jugador Nuevo\",\n  \"posicion\": \"Delantero\",\n  \"numeroCamiseta\": 9,\n  \"fechaNacimiento\": \"2001-03-15\",\n  \"equipoId\": 1\n}"
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Actualizar un jugador",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/jugadores/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"jugadores",
+								"1"
+							]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"numeroCamiseta\": 10\n}"
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Eliminar un jugador",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/jugadores/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"jugadores",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
 		},
 		{
-			"name": "Eliminar un cromo",
-			"request": {
-				"method": "DELETE",
-				"header": [],
-				"url": {
-					"raw": "{{base_url}}/api/cromos/2",
-					"host": ["{{base_url}}"],
-					"path": ["api", "cromos", "2"]
+			"name": "Albumes",
+			"item": [
+				{
+					"name": "Listar albumes",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/albumes",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"albumes"
+							]
+						}
+					},
+					"response": []
 				},
-				"description": "Elimina un cromo por id. Si el id no existe responde 404."
-			},
-			"response": []
-		},
-		{
-			"name": "Buscar un id que no existe (404)",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{base_url}}/api/cromos/999",
-					"host": ["{{base_url}}"],
-					"path": ["api", "cromos", "999"]
+				{
+					"name": "Obtener un album por id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/albumes/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"albumes",
+								"1"
+							]
+						}
+					},
+					"response": []
 				},
-				"description": "Ejemplo de respuesta de error cuando el cromo no existe."
-			},
-			"response": []
+				{
+					"name": "Crear un album",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/albumes",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"albumes"
+							]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"nombre\": \"Album Retro\",\n  \"anio\": 2022,\n  \"cantidadCromos\": 50,\n  \"edicionEspecial\": \"Gold\"\n}"
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Actualizar un album",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/albumes/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"albumes",
+								"1"
+							]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"cantidadCromos\": 60\n}"
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Eliminar un album",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/albumes/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"albumes",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
 		}
 	],
 	"variable": [

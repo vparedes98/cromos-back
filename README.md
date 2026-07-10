@@ -33,15 +33,26 @@ Notas del modelo:
 
 ## Endpoints
 
-| Método | Ruta             | Qué hace                                      |
-| ------ | ---------------- | --------------------------------------------- |
-| GET    | /api/cromos      | Lista todos los cromos                        |
-| GET    | /api/cromos/:id  | Devuelve un cromo por id (404 si no existe)   |
-| POST   | /api/cromos      | Crea un cromo (400 si faltan campos o las referencias no existen) |
-| PUT    | /api/cromos/:id  | Actualiza un cromo (los campos que no se envían se conservan) |
-| DELETE | /api/cromos/:id  | Elimina un cromo por id                       |
+Hay cinco recursos y todos exponen el mismo CRUD: `/api/cromos`, `/api/paises`, `/api/equipos`, `/api/jugadores` y `/api/albumes`.
 
-Ejemplo de body para el POST:
+| Método | Ruta                  | Qué hace                                      |
+| ------ | --------------------- | --------------------------------------------- |
+| GET    | /api/{recurso}        | Lista todos los registros                     |
+| GET    | /api/{recurso}/:id    | Devuelve un registro por id (404 si no existe) |
+| POST   | /api/{recurso}        | Crea un registro (400 si faltan campos o las referencias no existen) |
+| PUT    | /api/{recurso}/:id    | Actualiza un registro (los campos que no se envían se conservan) |
+| DELETE | /api/{recurso}/:id    | Elimina un registro (400 si otros registros dependen de él) |
+
+### Filtros de cromos
+
+`GET /api/cromos` acepta query params combinables:
+
+- `?edicion=cloud` busca por texto en la edición
+- `?jugadorId=3` cromos de un jugador
+- `?equipoId=2` cromos de los jugadores de un equipo
+- `?paisId=2` cromos de los jugadores del país
+
+Ejemplo de body para el POST de un cromo:
 
 ```json
 {
@@ -61,12 +72,12 @@ Los campos obligatorios son `numeroCromo`, `edicion`, `rareza`, `jugadorId` y `a
 
 ## Colección de Postman
 
-En esta misma carpeta está `cromos-api.postman_collection.json`. Se importa en Postman con File > Import y trae una petición por cada operación del CRUD, más un ejemplo de error 404. Todas usan la variable `base_url` que ya viene configurada con `http://localhost:3000`.
+En esta misma carpeta está `cromos-api.postman_collection.json`. Se importa en Postman con File > Import y trae una carpeta por recurso con las cinco operaciones del CRUD, más ejemplos de filtros y de errores (404 y llaves foráneas inválidas). Todas usan la variable `base_url` que ya viene configurada con `http://localhost:3000`.
 
 ## Archivos
 
 - `server.js`: configura Express, el logging de peticiones y monta las rutas.
-- `routes/cromos.js`: las 5 operaciones del CRUD.
+- `routes/`: un archivo por recurso (cromos, paises, equipos, jugadores, albumes) con su CRUD.
 - `db.js`: abre la conexión a SQLite y ejecuta `database.sql` si la base no existe.
 - `database.sql`: script SQL con las 5 tablas, sus relaciones y los datos iniciales.
 - `.env.example`: plantilla de las variables de entorno.
