@@ -8,7 +8,35 @@ function formatear(fila) {
 }
 
 router.get("/", (req, res) => {
-  const filas = db.prepare("SELECT * FROM cromos").all();
+  const { edicion, jugadorId, equipoId, paisId } = req.query;
+
+  let sql =
+    "SELECT c.* FROM cromos c JOIN jugadores j ON c.jugadorId = j.id JOIN equipos e ON j.equipoId = e.id";
+  const condiciones = [];
+  const valores = [];
+
+  if (edicion) {
+    condiciones.push("c.edicion LIKE ?");
+    valores.push("%" + edicion + "%");
+  }
+  if (jugadorId) {
+    condiciones.push("c.jugadorId = ?");
+    valores.push(jugadorId);
+  }
+  if (equipoId) {
+    condiciones.push("j.equipoId = ?");
+    valores.push(equipoId);
+  }
+  if (paisId) {
+    condiciones.push("e.paisId = ?");
+    valores.push(paisId);
+  }
+
+  if (condiciones.length > 0) {
+    sql += " WHERE " + condiciones.join(" AND ");
+  }
+
+  const filas = db.prepare(sql).all(...valores);
   res.json(filas.map(formatear));
 });
 
