@@ -3,6 +3,10 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const cromosRouter = require("./routes/cromos");
+const paisesRouter = require("./routes/paises");
+const equiposRouter = require("./routes/equipos");
+const jugadoresRouter = require("./routes/jugadores");
+const albumesRouter = require("./routes/albumes");
 
 const app = express();
 const PUERTO = process.env.PORT || 3000;
@@ -17,12 +21,16 @@ app.use((req, res, next) => {
 
 app.get("/", (req, res) => {
   res.json({
-    mensaje: "API de cromos del mundial - Fase 2",
-    rutas: ["GET /api/cromos", "GET /api/cromos/:id", "POST /api/cromos", "PUT /api/cromos/:id", "DELETE /api/cromos/:id"]
+    mensaje: "API de cromos del mundial",
+    recursos: ["/api/cromos", "/api/paises", "/api/equipos", "/api/jugadores", "/api/albumes"]
   });
 });
 
 app.use("/api/cromos", cromosRouter);
+app.use("/api/paises", paisesRouter);
+app.use("/api/equipos", equiposRouter);
+app.use("/api/jugadores", jugadoresRouter);
+app.use("/api/albumes", albumesRouter);
 
 app.use((req, res) => {
   res.status(404).json({ error: "Ruta no encontrada" });
