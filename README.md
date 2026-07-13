@@ -1,17 +1,18 @@
 # API de Cromos del Mundial (Fase 2)
 
-Este repositorio contiene el backend del proyecto de cromos del mundial. Es una API REST hecha con Node.js y Express que expone el CRUD completo de los cromos que en la Fase 1 vivían como data dummy en el frontend ([cromos-front](https://github.com/vparedes98/cromos-front)). Ahora los datos se guardan en una base de datos SQL con el modelo completo de 5 entidades.
+Este repositorio contiene el backend del proyecto de cromos del mundial. Es una API REST hecha con Node.js y Express que expone el CRUD completo de los cromos que en la Fase 1 vivían como data dummy en el frontend ([cromos-front](https://github.com/vparedes98/cromos-front)). Los datos se guardan en MySQL, con el modelo completo de 5 entidades.
 
 ## Cómo levantar la API
 
 ```bash
 npm install
+npm run init-db
 npm start
 ```
 
-La configuración (puerto y nombre del archivo de base de datos) se lee desde el archivo `.env`. En el repo va `.env.example` como plantilla; basta copiarlo como `.env`. Si no existe, el servidor usa valores por defecto (puerto 3000).
+La configuración se lee desde el archivo `.env` (hay un `.env.example` de plantilla): puerto del servidor y los datos de conexión a MySQL (`DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD`, `DB_NAME`).
 
-El servidor queda corriendo en `http://localhost:3000`. La primera vez que arranca, todavía no existe el archivo `cromos.db`, así que el script `database.sql` se ejecuta automáticamente para crear las 5 tablas y cargar los datos iniciales. A partir de ahí todos los cambios (altas, ediciones, borrados) quedan guardados aunque se reinicie el servidor. Para volver al estado inicial basta con borrar `cromos.db` y arrancar de nuevo.
+`npm run init-db` crea la base de datos si no existe y corre `database.sql` para levantar las 5 tablas y cargar los datos iniciales. Solo hace falta correrlo una vez (o cuando se quiera volver al estado inicial). Después, `npm start` deja el servidor corriendo en `http://localhost:3000`.
 
 Cada petición que llega se registra en consola con su fecha, método y ruta.
 
@@ -78,13 +79,14 @@ En esta misma carpeta está `cromos-api.postman_collection.json`. Se importa en 
 
 - `server.js`: configura Express, el logging de peticiones y monta las rutas.
 - `routes/`: un archivo por recurso (cromos, paises, equipos, jugadores, albumes) con su CRUD.
-- `db.js`: abre la conexión a SQLite y ejecuta `database.sql` si la base no existe.
+- `db.js`: pool de conexiones a MySQL con `mysql2/promise`.
 - `database.sql`: script SQL con las 5 tablas, sus relaciones y los datos iniciales.
+- `scripts/init-db.js`: crea la base de datos (si no existe) y ejecuta `database.sql`.
 - `.env.example`: plantilla de las variables de entorno.
 - `cromos-api.postman_collection.json`: colección para probar la API.
 
-## Base de datos: hoy y en la fase cloud
+## Base de datos: RDS con MySQL
 
-El modelo es claramente relacional (5 tablas unidas por llaves foráneas: un cromo pertenece a un jugador, que pertenece a un equipo, que pertenece a un país), así que la decisión de fondo es usar una base SQL y no NoSQL.
+El modelo es claramente relacional (5 tablas unidas por llaves foráneas: un cromo pertenece a un jugador, que pertenece a un equipo, que pertenece a un país), así que la decisión de fondo fue usar una base SQL y no NoSQL. En DynamoDB este mismo modelo obligaría a desnormalizar las 5 entidades o a resolver los filtros combinados (por ejemplo cromos de un país, que cruza jugador → equipo → país) con múltiples consultas manuales; en MySQL es un solo JOIN.
 
-Para esta entrega uso SQLite porque permite desarrollar y demostrar el CRUD sin instalar un servidor de base de datos: cualquiera clona el repo y lo corre con `npm install` y `npm start`. Para la fase cloud el plan es migrar a una base gestionada (RDS con MySQL o PostgreSQL): el script `database.sql` y las consultas de las rutas son SQL estándar en su mayoría, de modo que la migración se concentra en `db.js` (la conexión) y no en la lógica de la API. Ese cambio también es necesario para que el backend sea stateless: con la base fuera del servidor, se pueden levantar varias instancias de la API sin que cada una tenga datos distintos.
+La API corre contra una instancia de Amazon RDS (MySQL), que reemplazó al SQLite local de las primeras entregas. Al sacar los datos del proceso del servidor, el backend queda stateless: se pueden levantar varias instancias de la API sin que cada una tenga datos distintos, porque todas apuntan a la misma base gestionada.
