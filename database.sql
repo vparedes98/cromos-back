@@ -1,51 +1,51 @@
 CREATE TABLE IF NOT EXISTS paises (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  nombre TEXT NOT NULL,
-  continente TEXT NOT NULL,
-  codigoFifa TEXT NOT NULL,
-  rankingFifa INTEGER
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  nombre VARCHAR(100) NOT NULL,
+  continente VARCHAR(50) NOT NULL,
+  codigoFifa VARCHAR(10) NOT NULL,
+  rankingFifa INT
 );
 
 CREATE TABLE IF NOT EXISTS equipos (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  nombre TEXT NOT NULL,
-  directorTecnico TEXT,
-  anioFundacion INTEGER,
-  logo TEXT,
-  grupoMundialista TEXT,
-  paisId INTEGER NOT NULL,
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  nombre VARCHAR(100) NOT NULL,
+  directorTecnico VARCHAR(100),
+  anioFundacion INT,
+  logo VARCHAR(255),
+  grupoMundialista VARCHAR(5),
+  paisId INT NOT NULL,
   FOREIGN KEY (paisId) REFERENCES paises(id)
 );
 
 CREATE TABLE IF NOT EXISTS jugadores (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  nombre TEXT NOT NULL,
-  posicion TEXT NOT NULL,
-  numeroCamiseta INTEGER,
-  fechaNacimiento TEXT,
-  equipoId INTEGER NOT NULL,
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  nombre VARCHAR(100) NOT NULL,
+  posicion VARCHAR(50) NOT NULL,
+  numeroCamiseta INT,
+  fechaNacimiento DATE,
+  equipoId INT NOT NULL,
   FOREIGN KEY (equipoId) REFERENCES equipos(id)
 );
 
 CREATE TABLE IF NOT EXISTS albumes (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  nombre TEXT NOT NULL,
-  anio INTEGER NOT NULL,
-  cantidadCromos INTEGER,
-  edicionEspecial TEXT
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  nombre VARCHAR(150) NOT NULL,
+  anio INT NOT NULL,
+  cantidadCromos INT,
+  edicionEspecial VARCHAR(100)
 );
 
 CREATE TABLE IF NOT EXISTS cromos (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  numeroCromo TEXT NOT NULL,
-  edicion TEXT NOT NULL,
-  valorMercado REAL,
-  foto TEXT,
-  rareza TEXT NOT NULL,
-  obtenido INTEGER NOT NULL DEFAULT 0,
-  color TEXT,
-  jugadorId INTEGER NOT NULL,
-  albumId INTEGER NOT NULL,
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  numeroCromo VARCHAR(20) NOT NULL,
+  edicion VARCHAR(150) NOT NULL,
+  valorMercado DECIMAL(10, 2),
+  foto VARCHAR(500),
+  rareza VARCHAR(50) NOT NULL,
+  obtenido TINYINT(1) NOT NULL DEFAULT 0,
+  color VARCHAR(20),
+  jugadorId INT NOT NULL,
+  albumId INT NOT NULL,
   FOREIGN KEY (jugadorId) REFERENCES jugadores(id),
   FOREIGN KEY (albumId) REFERENCES albumes(id)
 );

@@ -1,18 +1,13 @@
-const Database = require("better-sqlite3");
-const fs = require("fs");
-const path = require("path");
+const mysql = require("mysql2/promise");
 
-const rutaDb = path.join(__dirname, process.env.DB_FILE || "cromos.db");
-const existia = fs.existsSync(rutaDb);
-
-const db = new Database(rutaDb);
-
-db.pragma("foreign_keys = ON");
-
-if (!existia) {
-  const script = fs.readFileSync(path.join(__dirname, "database.sql"), "utf8");
-  db.exec(script);
-  console.log("Base de datos creada desde database.sql");
-}
+const db = mysql.createPool({
+  host: process.env.DB_HOST,
+  port: process.env.DB_PORT || 3306,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+  waitForConnections: true,
+  connectionLimit: 5
+});
 
 module.exports = db;
