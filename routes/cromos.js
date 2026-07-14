@@ -1,7 +1,21 @@
 const express = require("express");
+const multer = require("multer");
 const db = require("../db");
+const { subirImagen } = require("../s3");
 
 const router = express.Router();
+
+const subida = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 5 * 1024 * 1024 },
+  fileFilter: (req, archivo, cb) => {
+    if (archivo.mimetype.startsWith("image/")) {
+      cb(null, true);
+    } else {
+      cb(new Error("El archivo debe ser una imagen"));
+    }
+  }
+});
 
 function formatear(fila) {
   return {
@@ -106,6 +120,26 @@ router.put("/:id", async (req, res) => {
     }
     throw err;
   }
+
+  const [[actualizado]] = await db.execute("SELECT * FROM cromos WHERE id = ?", [req.params.id]);
+  res.json(formatear(actualizado));
+});
+
+router.post("/:id/foto", subida.single("foto"), async (req, res) => {
+  const [filas] = await db.execute("SELECT * FROM cromos WHERE id = ?", [req.params.id]);
+  if (filas.length === 0) {
+    return res.status(404).json({ error: "No existe un cromo con ese id" });
+  }
+
+  if (!req.file) {
+    return res.status(400).json({ error: "No se envio ninguna imagen en el campo 'foto'" });
+  }
+
+  const extension = req.file.originalname.split(".").pop().toLowerCase();
+  const nombreArchivo = `cromos/${req.params.id}-${Date.now()}.${extension}`;
+
+  const url = await subirImagen(req.file.buffer, nombreArchivo, req.file.mimetype);
+  await db.execute("UPDATE cromos SET foto = ? WHERE id = ?", [url, req.params.id]);
 
   const [[actualizado]] = await db.execute("SELECT * FROM cromos WHERE id = ?", [req.params.id]);
   res.json(formatear(actualizado));

@@ -9,9 +9,11 @@
     "init-db": "node scripts/init-db.js"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.1087.0",
     "cors": "^2.8.5",
     "dotenv": "^17.4.2",
     "express": "^4.21.2",
+    "multer": "^2.2.0",
     "mysql2": "^3.22.6"
   }
 }

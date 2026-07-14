@@ -36,6 +36,19 @@ app.use((req, res) => {
   res.status(404).json({ error: "Ruta no encontrada" });
 });
 
+app.use((err, req, res, next) => {
+  console.error("Error:", err.message);
+
+  if (err.code === "LIMIT_FILE_SIZE") {
+    return res.status(400).json({ error: "La imagen no puede pesar mas de 5 MB" });
+  }
+  if (err.message === "El archivo debe ser una imagen") {
+    return res.status(400).json({ error: err.message });
+  }
+
+  res.status(500).json({ error: "Error interno del servidor" });
+});
+
 app.listen(PUERTO, () => {
   console.log(`Servidor corriendo en http://localhost:${PUERTO}`);
 });
