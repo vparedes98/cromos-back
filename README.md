@@ -1,6 +1,8 @@
-# API de Cromos del Mundial (Fase 2)
+# API de Cromos del Mundial
 
-Este repositorio contiene el backend del proyecto de cromos del mundial. Es una API REST hecha con Node.js y Express que expone el CRUD completo de los cromos que en la Fase 1 vivían como data dummy en el frontend ([cromos-front](https://github.com/vparedes98/cromos-front)). Los datos se guardan en MySQL, con el modelo completo de 5 entidades.
+Este repositorio contiene el backend del proyecto de cromos del mundial. Es una API REST hecha con Node.js y Express que expone el CRUD completo de los cromos que en la Fase 1 vivían como data dummy en el frontend ([cromos-front](https://github.com/vparedes98/cromos-front)). Los datos se guardan en MySQL, con el modelo completo de 5 entidades, y las imágenes en S3.
+
+En producción corre sobre una instancia EC2 y se accede a través de CloudFront: https://d2u7pgb2fbwyfw.cloudfront.net/api/cromos
 
 ## Cómo levantar la API
 
@@ -10,7 +12,7 @@ npm run init-db
 npm start
 ```
 
-La configuración se lee desde el archivo `.env` (hay un `.env.example` de plantilla): puerto del servidor y los datos de conexión a MySQL (`DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD`, `DB_NAME`).
+La configuración se lee desde el archivo `.env` (hay un `.env.example` de plantilla): puerto del servidor, los datos de conexión a MySQL (`DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD`, `DB_NAME`) y el bucket de imágenes (`AWS_REGION`, `S3_BUCKET`).
 
 `npm run init-db` crea la base de datos si no existe y corre `database.sql` para levantar las 5 tablas y cargar los datos iniciales. Solo hace falta correrlo una vez (o cuando se quiera volver al estado inicial). Después, `npm start` deja el servidor corriendo en `http://localhost:3000`.
 
@@ -29,7 +31,7 @@ Cinco entidades relacionadas:
 Notas del modelo:
 
 - `valorMercado` se guarda como número en millones de USD (85 = USD 85M) para poder hacer cálculos; el formateo es cosa del frontend.
-- `foto` guarda la URL de la imagen del cromo. Por ahora viene NULL; en la fase cloud apuntará a objetos en S3 (las imágenes no se guardan en el servidor).
+- `foto` guarda la URL de la imagen del cromo en S3. Las imágenes nunca se guardan en el disco del servidor: la base solo conserva la referencia.
 - Las llaves foráneas están activadas: no se puede crear un cromo con un `jugadorId` o `albumId` que no existan.
 
 ## Endpoints
@@ -71,19 +73,36 @@ Ejemplo de body para el POST de un cromo:
 
 Los campos obligatorios son `numeroCromo`, `edicion`, `rareza`, `jugadorId` y `albumId`.
 
+### Imágenes
+
+| Método | Ruta                   | Qué hace                                      |
+| ------ | ---------------------- | --------------------------------------------- |
+| POST   | /api/cromos/:id/foto   | Sube la imagen del cromo a S3 y guarda su URL |
+
+Se envía como `multipart/form-data` con el archivo en el campo `foto`. Solo acepta imágenes y hasta 5 MB (si no, responde 400). El archivo va directo a S3 desde memoria, sin pasar por el disco del servidor, y la respuesta trae el cromo ya actualizado con la URL.
+
 ## Colección de Postman
 
-En esta misma carpeta está `cromos-api.postman_collection.json`. Se importa en Postman con File > Import y trae una carpeta por recurso con las cinco operaciones del CRUD, más ejemplos de filtros y de errores (404 y llaves foráneas inválidas). Todas usan la variable `base_url` que ya viene configurada con `http://localhost:3000`.
+En esta misma carpeta está `cromos-api.postman_collection.json`. Se importa en Postman con File > Import y trae una carpeta por recurso con las cinco operaciones del CRUD, más ejemplos de filtros y de errores (404 y llaves foráneas inválidas). La variable `base_url` viene apuntando a la API desplegada en AWS; para probar en local basta cambiarla por `http://localhost:3000`.
 
 ## Archivos
 
 - `server.js`: configura Express, el logging de peticiones y monta las rutas.
 - `routes/`: un archivo por recurso (cromos, paises, equipos, jugadores, albumes) con su CRUD.
 - `db.js`: pool de conexiones a MySQL con `mysql2/promise`.
+- `s3.js`: sube las imágenes al bucket de S3.
 - `database.sql`: script SQL con las 5 tablas, sus relaciones y los datos iniciales.
 - `scripts/init-db.js`: crea la base de datos (si no existe) y ejecuta `database.sql`.
 - `.env.example`: plantilla de las variables de entorno.
 - `cromos-api.postman_collection.json`: colección para probar la API.
+
+## Despliegue en AWS
+
+La API corre en una instancia **EC2** (Amazon Linux), gestionada con `pm2` para que el proceso se levante solo si el servidor se reinicia. Delante está **CloudFront**, que expone la API por HTTPS bajo la ruta `/api/*` del mismo dominio que sirve el frontend.
+
+Los datos viven en **RDS** (MySQL) y las imágenes en **S3**. Los logs de la aplicación se envían a **CloudWatch** mediante el agente instalado en la instancia.
+
+Sobre las credenciales: el `.env` del servidor solo tiene la conexión a la base y el nombre del bucket. Las credenciales de AWS **no existen en el código ni en el `.env`**: la instancia tiene un rol IAM con permiso para escribir únicamente en el bucket de imágenes, y el SDK las obtiene sola. Los security groups completan el esquema: la base de datos solo acepta conexiones desde la instancia (no desde internet).
 
 ## Base de datos: RDS con MySQL
 
